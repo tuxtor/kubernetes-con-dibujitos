@@ -1,18 +1,35 @@
 @startuml
 !theme mars
 component container  [
-Docker container
+Docker containerweb (frontend)
 ===
 {{
-    artifact microservice as "spring-boot-microservice.jar"
+    artifact angular as "angular-app"
 }}
 ---
 {{
-    component JVM as "Java -e.g. OpenJDK -"
+    component NGINX as "NGINX Web server"
 }}
 ---
 {{
     component Glibc as "Glibc /  Musl (Linux stdlib)"
 }}
 ]
+
+component containerjava  [
+Docker container (backend)
+===
+{{
+    artifact microservice as "spring-boot-microservice.jar"
+}}
+---
+{{
+    component JVM as "Java -e.g. OpenJDK-"
+}}
+---
+{{
+    component Glibc as "Glibc /  Musl (Linux stdlib)"
+}}
+]
+
 @enduml
