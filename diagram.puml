@@ -1,5 +1,8 @@
 @startuml
-!theme mars
+!theme toy
+
+node server1 as  "server1.vorozco.local" {
+package compose as "docker-compose.yml (Docker Compose)"{
 component container  [
 Docker containerweb (frontend)
 ===
@@ -32,4 +35,13 @@ Docker container (backend)
 }}
 ]
 
+component Database [
+Docker Database (Oracle)
+===
+Oracle RDMBS
+---
+Glibc /  Musl (Linux stdlib)
+]
+}
+}
 @enduml
