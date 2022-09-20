@@ -1,12 +1,15 @@
 @startuml
 !theme toy
 
+frame workernodes as "Worker nodes"{
+node server1 as "server1.vorozoco.local"{
+
 package Deployment {
 
 
      component rs as "ReplicaSet"{
     
-        component pod
+        component pod1
 
         component pod2 
 
@@ -20,12 +23,31 @@ package Deployment {
 
 boundary service as "service <<network lb>>"
 
-service ...> pod
-service ...> pod2
-service ...> pod3
+component kubeproxy1 as "kube-proxy <<pod>>"
+}
 
-pod ..> PersistentVolume
+node server2 as "server2.vorozoco.local"{
+    label "proxy, pods and services ..."
+}
+
+node servern as "server...vorozoco.local"{
+    label "pods and services ..."
+}
+service ..> pod1
+service ..> pod2
+service ..> pod3
+
+pod1 ..> PersistentVolume
 pod2 ..> PersistentVolume
 pod3 ..> PersistentVolume
+
+server1 ...right.. server2
+server2 ..down.. servern
+
+kubeproxy1 ..> service
+
+}
+
+
 
 @enduml
