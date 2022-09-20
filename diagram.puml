@@ -2,46 +2,29 @@
 !theme toy
 
 node server1 as  "server1.vorozco.local" {
-package compose as "docker-compose.yml (Docker Compose)"{
-component container  [
-Docker containerweb (frontend)
-===
-{{
-    artifact angular as "angular-app"
-}}
----
-{{
-    component NGINX as "NGINX Web server"
-}}
----
-{{
-    component Glibc as "Glibc /  Musl (Linux stdlib)"
-}}
-]
 
-component containerjava  [
-Docker container (backend)
-===
-{{
-    artifact microservice as "spring-boot-microservice.jar"
-}}
----
-{{
-    component JVM as "Java -e.g. OpenJDK-"
-}}
----
-{{
-    component Glibc as "Glibc /  Musl (Linux stdlib)"
-}}
-]
+    package compose as "docker-compose.yml (Docker Swarm)"{
+        component container  as "Frontend <<Angular>>"
 
-component Database [
-Docker Database (Oracle)
-===
-Oracle RDMBS
----
-Glibc /  Musl (Linux stdlib)
-]
+        component containerjava as "Backend <<Spring Boot>>"
+
+        component Database as "Database <<Oracle>>"
+    }
 }
+
+
+node server2 as  "server2.vorozco.local" {
+    package composes as "docker-compose.yml (Docker Swarm)"{
+        label "<<docker containers ...>>"
+    }
 }
+
+node lb as "loadbalancer.vorozco.local"
+
+actor client
+
+lb -right--> server1: http
+lb -down--> server2: http
+
+client -right--> lb
 @enduml
