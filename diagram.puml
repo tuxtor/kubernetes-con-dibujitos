@@ -57,18 +57,32 @@ frame controlplane as "Control plane"{
         component "Controllers"
         
     }
+
+    node cp2 as "cp2.vorozoco.local"
+
+    node cp3 as "cp3.vorozoco.local"
 }
 
 actor SRE
 
+actor user
+
 node loadbalancer as "lb.vorozco.local <<HAProxy>>"
 
-kubelet ...left... API
+node cploadbalancer as "cplb.vorozco.local <<HAProxy>>"
 
-SRE .. API
+
+kubelet ...... cploadbalancer
+
+SRE .. cploadbalancer
 
 loadbalancer --down--> server1
 loadbalancer --down--> server2
 loadbalancer --down--> servern
 
+cploadbalancer --up--> cp1
+cploadbalancer --up--> cp2
+cploadbalancer --up--> cp3
+
+user -- loadbalancer
 @enduml
