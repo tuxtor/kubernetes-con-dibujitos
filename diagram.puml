@@ -1,0 +1,8 @@
+@startuml
+!theme mars
+artifact microservice[
+"spring-boot-microservice.jar"
+===
+"spring-boot", "tomcat", "other deps"
+]
+@enduml
