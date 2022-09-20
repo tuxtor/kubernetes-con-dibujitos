@@ -1,12 +1,28 @@
 @startuml
 !theme toy
 
-    component pod as "Pod"{
+component rs as "ReplicaSet"{
+    
+    component pod as "Pod (1st. replica)"{
         component backend as "Backend <<Spring Boot>>"
 
         component mesh as "Envoy <<Sidecar>>"
 
         component other as "Fluentd <<Logger>>"
     }
+
+    component pod2 as "2nd. replica" {
+        label "<<containers ...>>"
+    }
+    component pod3 as "3rd. replica"{
+        label "<<containers ...>>"
+    }
+}
+
+boundary service as "service <<network lb>>"
+
+service ...> pod
+service ...> pod2
+service ...> pod3
 
 @enduml
