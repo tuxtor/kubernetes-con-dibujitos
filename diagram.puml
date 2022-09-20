@@ -1,30 +1,12 @@
 @startuml
 !theme toy
 
-node server1 as  "server1.vorozco.local" {
+    component pod as "Pod"{
+        component backend as "Backend <<Spring Boot>>"
 
-    package compose as "docker-compose.yml (Docker Swarm)"{
-        component container  as "Frontend <<Angular>>"
+        component mesh as "Envoy <<Sidecar>>"
 
-        component containerjava as "Backend <<Spring Boot>>"
-
-        component Database as "Database <<Oracle>>"
+        component other as "Fluentd <<Logger>>"
     }
-}
 
-
-node server2 as  "server2.vorozco.local" {
-    package composes as "docker-compose.yml (Docker Swarm)"{
-        label "<<docker containers ...>>"
-    }
-}
-
-node lb as "loadbalancer.vorozco.local"
-
-actor client
-
-lb -right--> server1: http
-lb -down--> server2: http
-
-client -right--> lb
 @enduml
