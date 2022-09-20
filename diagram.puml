@@ -24,6 +24,8 @@ package Deployment {
 boundary service as "service <<network lb>>"
 
 component kubeproxy1 as "kube-proxy <<pod>>"
+
+component kubelet
 }
 
 node server2 as "server2.vorozoco.local"{
@@ -41,13 +43,32 @@ pod1 ..> PersistentVolume
 pod2 ..> PersistentVolume
 pod3 ..> PersistentVolume
 
-server1 ...right.. server2
-server2 ..down.. servern
-
 kubeproxy1 ..> service
 
 }
 
 
+frame controlplane as "Control plane"{
+    node cp1 as "cp1.vorozoco.local"{
+        component API as "Api Server"
+
+        component Scheduler
+        component Etcd 
+        component "Controllers"
+        
+    }
+}
+
+actor SRE
+
+node loadbalancer as "lb.vorozco.local <<HAProxy>>"
+
+kubelet ...left... API
+
+SRE .. API
+
+loadbalancer --down--> server1
+loadbalancer --down--> server2
+loadbalancer --down--> servern
 
 @enduml
