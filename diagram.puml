@@ -1,22 +1,21 @@
 @startuml
 !theme toy
 
-component rs as "ReplicaSet"{
+package Deployment {
+
+
+     component rs as "ReplicaSet"{
     
-    component pod as "Pod (1st. replica)"{
-        component backend as "Backend <<Spring Boot>>"
+        component pod
 
-        component mesh as "Envoy <<Sidecar>>"
+        component pod2 
 
-        component other as "Fluentd <<Logger>>"
+        component pod3 as "pod..."
+
+        
     }
 
-    component pod2 as "2nd. replica" {
-        label "<<containers ...>>"
-    }
-    component pod3 as "3rd. replica"{
-        label "<<containers ...>>"
-    }
+    database PersistentVolume as "PersistentVolume"
 }
 
 boundary service as "service <<network lb>>"
@@ -24,5 +23,9 @@ boundary service as "service <<network lb>>"
 service ...> pod
 service ...> pod2
 service ...> pod3
+
+pod ..> PersistentVolume
+pod2 ..> PersistentVolume
+pod3 ..> PersistentVolume
 
 @enduml
