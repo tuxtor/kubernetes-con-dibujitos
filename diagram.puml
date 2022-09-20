@@ -1,8 +1,18 @@
 @startuml
 !theme mars
-artifact microservice[
-"spring-boot-microservice.jar"
+component container  [
+Docker container
 ===
-"spring-boot", "tomcat", "other deps"
+{{
+    artifact microservice as "spring-boot-microservice.jar"
+}}
+---
+{{
+    component JVM as "Java -e.g. OpenJDK -"
+}}
+---
+{{
+    component Glibc as "Glibc /  Musl (Linux stdlib)"
+}}
 ]
 @enduml
