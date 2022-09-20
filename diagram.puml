@@ -2,66 +2,55 @@
 !theme toy
 
 frame workernodes as "Worker nodes"{
-node server1 as "server1.vorozoco.local"{
-
-package Deployment {
+package Deployment as "Deployment (Spring Boot)" {
 
 
-     component rs as "ReplicaSet"{
-    
-        component pod1
-
-        component pod2 
-
-        component pod3 as "pod..."
-
-        
-    }
+    collections rs as "ReplicaSet"
 
     database PersistentVolume as "PersistentVolume"
-}
 
-boundary service as "service <<network lb>>"
-
-component kubeproxy1 as "kube-proxy <<pod>>"
-
-component kubelet
-}
-
-node server2 as "server2.vorozoco.local"{
-    label "proxy, pods and services ..."
-}
-
-node servern as "server...vorozoco.local"{
-    label "pods and services ..."
-}
-service ..> pod1
-service ..> pod2
-service ..> pod3
-
-pod1 ..> PersistentVolume
-pod2 ..> PersistentVolume
-pod3 ..> PersistentVolume
-
-kubeproxy1 ..> service
+    boundary service as "service <<network lb>>"
 
 }
 
+package Deployment2 as "Deployment (Angular)" {
 
-frame controlplane as "Control plane"{
-    node cp1 as "cp1.vorozoco.local"{
-        component API as "Api Server"
 
-        component Scheduler
-        component Etcd 
-        component "Controllers"
-        
-    }
+    collections rs2 as "ReplicaSet"
 
-    node cp2 as "cp2.vorozoco.local"
+    database PersistentVolume2 as "PersistentVolume"
 
-    node cp3 as "cp3.vorozoco.local"
+    boundary service2 as "service <<network lb>>"
+
 }
+
+package Deployment3 as "Deployment (Redis)" {
+
+
+    component Redis
+    boundary service3 as "service <<network lb>>"
+
+}
+
+service ..> rs
+rs ..> PersistentVolume
+
+service2 ..> rs2
+rs2 ..> PersistentVolume2
+
+service3 ..> Redis
+
+component Ingress as "Ingress (NGINX)"
+
+Ingress .down.> service
+Ingress .down.> service2
+
+node servern as "servern.vorozco.local <<node>>"
+
+}
+
+
+frame controlplane as "Control plane"
 
 actor SRE
 
@@ -69,20 +58,12 @@ actor user
 
 node loadbalancer as "lb.vorozco.local <<HAProxy>>"
 
-node cploadbalancer as "cplb.vorozco.local <<HAProxy>>"
+workernodes ..up.. controlplane
+user .. loadbalancer
+SRE .. controlplane
 
+loadbalancer ..down..> Ingress : Ingress
+loadbalancer ..down..> service3 : LoadBalancer
+loadbalancer ..down..> servern : NodePort
 
-kubelet ...... cploadbalancer
-
-SRE .. cploadbalancer
-
-loadbalancer --down--> server1
-loadbalancer --down--> server2
-loadbalancer --down--> servern
-
-cploadbalancer --up--> cp1
-cploadbalancer --up--> cp2
-cploadbalancer --up--> cp3
-
-user -- loadbalancer
 @enduml
